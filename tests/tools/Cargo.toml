@@ -1,0 +1,20 @@
+[package]
+name = "photon-test-tools"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "mkpayload"
+path = "src/mkpayload.rs"
+
+[[bin]]
+name = "mkimage"
+path = "src/mkimage.rs"
+
+[[bin]]
+name = "check-png"
+path = "src/check_png.rs"
+
+[dependencies]
+serde_json = "1.0"
+png = "0.17"

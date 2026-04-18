@@ -3,146 +3,509 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task API</title>
+    <title>Photon wasmCloud Demo</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 20px;
-            background: #f5f5f5;
+            background: #0f0f1a;
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        h1 {
-            color: #333;
-            margin-bottom: 24px;
-        }
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            color: #444;
-        }
-        select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-            margin-bottom: 16px;
-        }
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-        button {
-            background: #0066cc;
-            color: white;
-            border: none;
+        header {
+            background: #1a1a2e;
             padding: 12px 24px;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #2a2a4a;
         }
-        button:hover {
-            background: #0052a3;
+        header h1 { font-size: 18px; font-weight: 600; color: #fff; }
+        header .subtitle { font-size: 12px; color: #888; }
+        .app {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
         }
-        button:disabled {
-            background: #999;
-            cursor: not-allowed;
+        .sidebar {
+            width: 280px;
+            min-width: 280px;
+            background: #1a1a2e;
+            border-right: 1px solid #2a2a4a;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
-        #result {
-            margin-top: 24px;
+        .upload-area {
             padding: 16px;
-            background: white;
-            border: 1px solid #ddd;
+            border-bottom: 1px solid #2a2a4a;
+        }
+        .upload-drop {
+            border: 2px dashed #444;
+            border-radius: 8px;
+            padding: 24px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .upload-drop:hover, .upload-drop.dragover {
+            border-color: #6c63ff;
+            background: rgba(108, 99, 255, 0.05);
+        }
+        .upload-drop p { font-size: 13px; color: #888; }
+        .upload-drop .icon { font-size: 28px; margin-bottom: 8px; }
+        .upload-drop input[type="file"] { display: none; }
+        .categories { flex: 1; overflow-y: auto; padding-bottom: 16px; }
+        .category { border-bottom: 1px solid #2a2a4a; }
+        .category-header {
+            padding: 10px 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+            transition: background 0.15s;
+            user-select: none;
+        }
+        .category-header:hover { background: rgba(255,255,255,0.03); }
+        .category-header .arrow { transition: transform 0.2s; font-size: 10px; }
+        .category.open .arrow { transform: rotate(90deg); }
+        .category-body { display: none; padding: 0 8px 8px; }
+        .category.open .category-body { display: block; }
+        .transform-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: 1px solid transparent;
             border-radius: 4px;
-            white-space: pre-wrap;
-            word-break: break-word;
+            padding: 6px 10px;
+            color: #ccc;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.1s, border-color 0.1s;
+        }
+        .transform-btn:hover {
+            background: rgba(108, 99, 255, 0.1);
+            border-color: rgba(108, 99, 255, 0.3);
+        }
+        .transform-btn.active {
+            background: rgba(108, 99, 255, 0.15);
+            border-color: #6c63ff;
+            color: #fff;
+        }
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .toolbar {
+            padding: 8px 16px;
+            background: #16162a;
+            border-bottom: 1px solid #2a2a4a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 44px;
+        }
+        .toolbar button {
+            background: #2a2a4a;
+            color: #ccc;
+            border: 1px solid #3a3a5a;
+            border-radius: 4px;
+            padding: 5px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .toolbar button:hover { background: #3a3a5a; }
+        .toolbar button.primary { background: #6c63ff; border-color: #6c63ff; color: #fff; }
+        .toolbar button.primary:hover { background: #5a52e0; }
+        .toolbar button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .status { font-size: 12px; color: #888; flex: 1; }
+        .status .time { color: #6c63ff; font-weight: 600; }
+        .images-container { flex: 1; display: flex; overflow: hidden; }
+        .image-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            position: relative;
+            overflow: auto;
+        }
+        .image-panel:first-child { border-right: 1px solid #2a2a4a; }
+        .image-panel .label {
+            position: absolute;
+            top: 8px;
+            left: 16px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+        }
+        .image-panel img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+        .placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-size: 14px;
+        }
+        .placeholder .icon { font-size: 48px; margin-bottom: 12px; }
+        .params-bar {
+            padding: 8px 16px;
+            background: #16162a;
+            border-top: 1px solid #2a2a4a;
             display: none;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
         }
-        #result.error {
-            border-color: #cc0000;
-            background: #fff5f5;
-            color: #cc0000;
+        .params-bar.visible { display: flex; }
+        .param-group { display: flex; align-items: center; gap: 6px; }
+        .param-group label { font-size: 11px; color: #888; white-space: nowrap; }
+        .param-group input[type="range"] { width: 120px; accent-color: #6c63ff; }
+        .param-group input[type="number"] {
+            width: 60px; background: #2a2a4a; border: 1px solid #3a3a5a;
+            border-radius: 3px; color: #ccc; padding: 2px 4px; font-size: 12px;
         }
-        #result.success {
-            border-color: #00cc66;
-            background: #f5fff5;
+        .param-group select {
+            background: #2a2a4a; border: 1px solid #3a3a5a;
+            border-radius: 3px; color: #ccc; padding: 3px 6px; font-size: 12px;
         }
+        .param-value { font-size: 11px; color: #6c63ff; min-width: 35px; text-align: right; }
+        .spinner {
+            display: inline-block; width: 14px; height: 14px;
+            border: 2px solid #444; border-top-color: #6c63ff;
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+            margin-right: 6px; vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .image-info { font-size: 11px; color: #555; margin-top: 8px; }
     </style>
 </head>
 <body>
-    <h1>Task API</h1>
-    <form id="taskForm">
-        <label for="worker">Worker</label>
-        <select id="worker" name="worker">
-            <option value="task-leet" selected>Leet Speak</option>
-        </select>
-
-        <label for="payload">Payload</label>
-        <textarea id="payload" name="payload" placeholder="Enter your message here..."></textarea>
-
-        <button type="submit" id="submitBtn">Send Task</button>
-    </form>
-
-    <div id="result"></div>
+    <header>
+        <div>
+            <h1>Photon wasmCloud Demo</h1>
+            <span class="subtitle">Server-side image processing with WebAssembly</span>
+        </div>
+    </header>
+    <div class="app">
+        <div class="sidebar">
+            <div class="upload-area">
+                <div class="upload-drop" id="dropZone">
+                    <div class="icon">&#x1F5BC;</div>
+                    <p>Drop image here or click to upload</p>
+                    <input type="file" id="fileInput" accept="image/*">
+                </div>
+            </div>
+            <div class="categories" id="categories"></div>
+        </div>
+        <div class="main">
+            <div class="toolbar">
+                <button id="resetBtn" disabled>Reset to Original</button>
+                <button id="applyBtn" class="primary" disabled>Apply</button>
+                <div class="status" id="status">Upload an image to get started</div>
+            </div>
+            <div class="images-container">
+                <div class="image-panel">
+                    <span class="label">Original</span>
+                    <div id="originalPlaceholder" class="placeholder">
+                        <div class="icon">&#x1F5BC;</div>
+                        <div>No image loaded</div>
+                    </div>
+                    <img id="originalImg" style="display:none">
+                    <div class="image-info" id="originalInfo"></div>
+                </div>
+                <div class="image-panel">
+                    <span class="label">Processed</span>
+                    <div id="processedPlaceholder" class="placeholder">
+                        <div class="icon">&#x2728;</div>
+                        <div>Select a transform</div>
+                    </div>
+                    <img id="processedImg" style="display:none">
+                    <div class="image-info" id="processedInfo"></div>
+                </div>
+            </div>
+            <div class="params-bar" id="paramsBar"></div>
+        </div>
+    </div>
 
     <script>
-        const form = document.getElementById('taskForm');
-        const workerSelect = document.getElementById('worker');
-        const payloadTextarea = document.getElementById('payload');
-        const submitBtn = document.getElementById('submitBtn');
-        const resultDiv = document.getElementById('result');
+    (function() {
+        const MAX_DIM = 2048;
+        let originalArrayBuffer = null;
+        let transformsData = [];
+        let selectedTransform = null;
+        let processing = false;
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const categoriesEl = document.getElementById('categories');
+        const originalImg = document.getElementById('originalImg');
+        const processedImg = document.getElementById('processedImg');
+        const originalPlaceholder = document.getElementById('originalPlaceholder');
+        const processedPlaceholder = document.getElementById('processedPlaceholder');
+        const originalInfo = document.getElementById('originalInfo');
+        const processedInfo = document.getElementById('processedInfo');
+        const statusEl = document.getElementById('status');
+        const resetBtn = document.getElementById('resetBtn');
+        const applyBtn = document.getElementById('applyBtn');
+        const paramsBar = document.getElementById('paramsBar');
 
-            const worker = workerSelect.value;
-            const payload = payloadTextarea.value;
+        // Load transforms catalog
+        fetch('/api/transforms')
+            .then(r => r.json())
+            .then(data => {
+                transformsData = data;
+                renderCategories(data);
+            });
 
-            if (!payload.trim()) {
-                showResult('Payload is required', true);
-                return;
-            }
+        function renderCategories(categories) {
+            categoriesEl.innerHTML = '';
+            categories.forEach((cat, ci) => {
+                const div = document.createElement('div');
+                div.className = 'category' + (ci === 0 ? ' open' : '');
 
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
-            resultDiv.style.display = 'none';
+                const header = document.createElement('div');
+                header.className = 'category-header';
+                header.innerHTML = '<span>' + cat.category + ' (' + cat.transforms.length + ')</span><span class="arrow">&#x25B6;</span>';
+                header.addEventListener('click', () => div.classList.toggle('open'));
 
-            try {
-                const body = { payload, worker };
+                const body = document.createElement('div');
+                body.className = 'category-body';
 
-                const response = await fetch('/task', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
+                cat.transforms.forEach(t => {
+                    const btn = document.createElement('button');
+                    btn.className = 'transform-btn';
+                    btn.textContent = t.label;
+                    btn.dataset.name = t.name;
+                    btn.addEventListener('click', () => selectTransform(t, btn));
+                    body.appendChild(btn);
                 });
 
-                const text = await response.text();
+                div.appendChild(header);
+                div.appendChild(body);
+                categoriesEl.appendChild(div);
+            });
+        }
 
-                if (response.ok) {
-                    showResult(text, false);
-                } else {
-                    showResult(`Error ${response.status}: ${text}`, true);
-                }
-            } catch (err) {
-                showResult(`Request failed: ${err.message}`, true);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Send Task';
+        function selectTransform(t, btn) {
+            document.querySelectorAll('.transform-btn.active').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedTransform = t;
+            applyBtn.disabled = !originalArrayBuffer;
+            renderParams(t);
+            // Auto-apply immediately if an image is loaded
+            if (originalArrayBuffer) doApply();
+        }
+
+        function renderParams(t) {
+            paramsBar.innerHTML = '';
+            if (!t.params || t.params.length === 0) {
+                paramsBar.classList.remove('visible');
+                return;
             }
+            paramsBar.classList.add('visible');
+            t.params.forEach(p => {
+                const group = document.createElement('div');
+                group.className = 'param-group';
+
+                if (p.kind === 'select') {
+                    const label = document.createElement('label');
+                    label.textContent = p.label + ':';
+                    const select = document.createElement('select');
+                    select.dataset.param = p.name;
+                    p.options.forEach(o => {
+                        const opt = document.createElement('option');
+                        opt.value = o;
+                        opt.textContent = o;
+                        select.appendChild(opt);
+                    });
+                    group.appendChild(label);
+                    group.appendChild(select);
+                } else {
+                    const step = p.step || (p.kind === 'float' ? 0.05 : 1);
+                    const label = document.createElement('label');
+                    label.textContent = p.label + ':';
+                    const range = document.createElement('input');
+                    range.type = 'range';
+                    range.dataset.param = p.name;
+                    range.min = p.min;
+                    range.max = p.max;
+                    range.value = p.default;
+                    range.step = step;
+                    const val = document.createElement('span');
+                    val.className = 'param-value';
+                    val.textContent = p.default;
+                    range.addEventListener('input', () => { val.textContent = range.value; });
+                    group.appendChild(label);
+                    group.appendChild(range);
+                    group.appendChild(val);
+                }
+                paramsBar.appendChild(group);
+            });
+        }
+
+        function getParamValues() {
+            const params = {};
+            paramsBar.querySelectorAll('[data-param]').forEach(el => {
+                const key = el.dataset.param;
+                if (el.tagName === 'SELECT') {
+                    params[key] = el.value;
+                } else {
+                    params[key] = parseFloat(el.value);
+                }
+            });
+            return params;
+        }
+
+        // Image upload
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', e => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files[0]) loadFile(fileInput.files[0]);
         });
 
-        function showResult(message, isError) {
-            resultDiv.textContent = message;
-            resultDiv.className = isError ? 'error' : 'success';
-            resultDiv.style.display = 'block';
+        function loadFile(file) {
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const arrayBuf = e.target.result;
+                const blob = await toPngBlob(arrayBuf);
+                const finalBuf = await blob.arrayBuffer();
+                originalArrayBuffer = new Uint8Array(finalBuf);
+
+                const url = URL.createObjectURL(blob);
+                originalImg.onload = function() {
+                    originalInfo.textContent = this.naturalWidth + ' x ' + this.naturalHeight + ' | ' + (finalBuf.byteLength / 1024).toFixed(1) + ' KB';
+                };
+                originalImg.src = url;
+                originalImg.style.display = 'block';
+                originalPlaceholder.style.display = 'none';
+
+                processedImg.style.display = 'none';
+                processedPlaceholder.style.display = 'flex';
+                processedInfo.textContent = '';
+
+                statusEl.textContent = 'Image loaded. Select a transform.';
+                resetBtn.disabled = false;
+                applyBtn.disabled = !selectedTransform;
+            };
+            reader.readAsArrayBuffer(file);
         }
+
+        function toPngBlob(arrayBuf) {
+            return new Promise(resolve => {
+                const blob = new Blob([arrayBuf]);
+                const img = new Image();
+                img.onload = () => {
+                    let w = img.width, h = img.height;
+                    if (w > MAX_DIM || h > MAX_DIM) {
+                        const scale = MAX_DIM / Math.max(w, h);
+                        w = Math.round(w * scale);
+                        h = Math.round(h * scale);
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    canvas.toBlob(b => resolve(b), 'image/png');
+                };
+                img.src = URL.createObjectURL(blob);
+            });
+        }
+
+        // Apply transform
+        applyBtn.addEventListener('click', doApply);
+
+        async function doApply() {
+            if (!originalArrayBuffer || !selectedTransform || processing) return;
+            processing = true;
+            applyBtn.disabled = true;
+            statusEl.innerHTML = '<span class="spinner"></span>Processing...';
+
+            const params = getParamValues();
+            const headerObj = { transform: selectedTransform.name, params: params };
+            const headerJson = JSON.stringify(headerObj);
+            const headerBytes = new TextEncoder().encode(headerJson);
+            const lenBuf = new ArrayBuffer(4);
+            new DataView(lenBuf).setUint32(0, headerBytes.length);
+
+            const body = new Blob([lenBuf, headerBytes, originalArrayBuffer]);
+
+            try {
+                const resp = await fetch('/api/transform', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/octet-stream' },
+                    body: body,
+                });
+
+                if (!resp.ok) {
+                    const text = await resp.text();
+                    statusEl.textContent = 'Error: ' + text;
+                    return;
+                }
+
+                const info = resp.headers.get('X-Processing-Info');
+                let timeStr = '';
+                if (info) {
+                    try {
+                        const meta = JSON.parse(info);
+                        timeStr = ' | ' + meta.processing_time_ms + 'ms';
+                        processedInfo.textContent = meta.width + ' x ' + meta.height + timeStr;
+                    } catch(e) {}
+                }
+
+                const resultBlob = await resp.blob();
+                processedImg.src = URL.createObjectURL(resultBlob);
+                processedImg.style.display = 'block';
+                processedPlaceholder.style.display = 'none';
+                statusEl.textContent = 'Done' + timeStr + ' | ' + selectedTransform.label;
+            } catch(err) {
+                statusEl.textContent = 'Error: ' + err.message;
+            } finally {
+                processing = false;
+                applyBtn.disabled = false;
+            }
+        }
+
+        // Reset
+        resetBtn.addEventListener('click', () => {
+            processedImg.style.display = 'none';
+            processedPlaceholder.style.display = 'flex';
+            processedInfo.textContent = '';
+            statusEl.textContent = 'Reset to original. Select a transform.';
+        });
+
+        // Enter to apply
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey &&
+                document.activeElement.tagName !== 'INPUT' &&
+                document.activeElement.tagName !== 'SELECT') {
+                doApply();
+            }
+        });
+    })();
     </script>
 </body>
 </html>

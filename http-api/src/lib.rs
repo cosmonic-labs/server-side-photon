@@ -6,22 +6,22 @@ mod bindings {
     });
 }
 
-use anyhow::Context as _;
 use bindings::wasmcloud::messaging::consumer;
 
-use serde::Deserialize;
 use wstd::{
     http::{Body, Request, Response, StatusCode},
     time::Duration,
 };
 
 static UI_HTML: &str = include_str!("../ui.html");
+static TRANSFORMS_JSON: &str = include_str!("../transforms.json");
 
 #[wstd::http_server]
 async fn main(req: Request<Body>) -> anyhow::Result<Response<Body>> {
-    match req.uri().path() {
-        "/" => home(req).await,
-        "/task" => create_task(req).await,
+    match (req.method().as_str(), req.uri().path()) {
+        (_, "/") => serve_ui().await,
+        ("GET", "/api/transforms") => list_transforms().await,
+        ("POST", "/api/transform") => apply_transform(req).await,
         _ => Response::builder()
             .status(StatusCode::NOT_FOUND)
             .body("Not found\n".into())
@@ -29,7 +29,7 @@ async fn main(req: Request<Body>) -> anyhow::Result<Response<Body>> {
     }
 }
 
-async fn home(_req: Request<Body>) -> anyhow::Result<Response<Body>> {
+async fn serve_ui() -> anyhow::Result<Response<Body>> {
     Response::builder()
         .status(StatusCode::OK)
         .header("Content-Type", "text/html")
@@ -37,35 +37,70 @@ async fn home(_req: Request<Body>) -> anyhow::Result<Response<Body>> {
         .map_err(Into::into)
 }
 
-#[derive(Deserialize)]
-struct TaskRequest {
-    worker: Option<String>,
-    payload: String,
+async fn list_transforms() -> anyhow::Result<Response<Body>> {
+    Response::builder()
+        .status(StatusCode::OK)
+        .header("Content-Type", "application/json")
+        .body(TRANSFORMS_JSON.into())
+        .map_err(Into::into)
 }
 
-async fn create_task(mut req: Request<Body>) -> anyhow::Result<Response<Body>> {
-    let task_request: TaskRequest = req
-        .body_mut()
-        .json()
-        .await
-        .context("failed to parse body")?;
+async fn apply_transform(mut req: Request<Body>) -> anyhow::Result<Response<Body>> {
+    // Read the full binary body (binary-framed: [4 byte header len][JSON header][PNG data])
+    let body_bytes = req.body_mut().contents().await?.to_vec();
 
-    let subject = format!(
-        "tasks.{}",
-        task_request.worker.unwrap_or_else(|| "default".to_string())
-    );
+    if body_bytes.len() < 4 {
+        return Response::builder()
+            .status(StatusCode::BAD_REQUEST)
+            .body("request too short".into())
+            .map_err(Into::into);
+    }
 
-    let body = task_request.payload.into_bytes();
-    let request_timeout = Duration::from_secs(5).as_millis() as u32;
+    // Forward the entire binary payload to the task-photon worker
+    let timeout = Duration::from_secs(30).as_millis() as u32;
 
-    match consumer::request(&subject, &body, request_timeout) {
-        Ok(resp) => Response::builder()
-            .status(StatusCode::OK)
-            .body(resp.body.into())
-            .map_err(Into::into),
+    match consumer::request("tasks.photon", &body_bytes, timeout) {
+        Ok(resp) => {
+            // Response is binary-framed: [4 byte header len][JSON header][PNG data]
+            let resp_body = resp.body;
+
+            if resp_body.len() < 4 {
+                return Response::builder()
+                    .status(StatusCode::BAD_GATEWAY)
+                    .body("worker response too short".into())
+                    .map_err(Into::into);
+            }
+
+            let header_len = u32::from_be_bytes([
+                resp_body[0],
+                resp_body[1],
+                resp_body[2],
+                resp_body[3],
+            ]) as usize;
+
+            if resp_body.len() < 4 + header_len {
+                return Response::builder()
+                    .status(StatusCode::BAD_GATEWAY)
+                    .body("worker response truncated".into())
+                    .map_err(Into::into);
+            }
+
+            let header_json = &resp_body[4..4 + header_len];
+            let image_data = &resp_body[4 + header_len..];
+
+            // Parse the header to get metadata
+            let header_str = String::from_utf8_lossy(header_json);
+
+            Response::builder()
+                .status(StatusCode::OK)
+                .header("Content-Type", "image/png")
+                .header("X-Processing-Info", header_str.as_ref())
+                .body(image_data.to_vec().into())
+                .map_err(Into::into)
+        }
         Err(err) => Response::builder()
             .status(StatusCode::BAD_GATEWAY)
-            .body(err.into())
+            .body(format!("worker error: {err}").into())
             .map_err(Into::into),
     }
 }

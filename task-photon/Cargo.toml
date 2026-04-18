@@ -9,3 +9,6 @@ crate-type = ["cdylib"]
 [dependencies]
 wit-bindgen = { workspace = true }
 wstd = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+photon-rs = { version = "0.3.3", default-features = false }

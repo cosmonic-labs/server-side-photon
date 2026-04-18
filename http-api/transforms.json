@@ -1,0 +1,158 @@
+[
+  {
+    "category": "Effects",
+    "transforms": [
+      {"name": "effects.adjust_brightness", "label": "Adjust Brightness", "params": [{"name": "int_val", "label": "Brightness", "kind": "int", "default": 30, "min": -255, "max": 255}]},
+      {"name": "effects.adjust_contrast", "label": "Adjust Contrast", "params": [{"name": "float_val", "label": "Contrast", "kind": "float", "default": 30, "min": -255, "max": 255}]},
+      {"name": "effects.colorize", "label": "Colorize", "params": []},
+      {"name": "effects.color_horizontal_strips", "label": "Color H-Strips", "params": [{"name": "int_val", "label": "Count", "kind": "int", "default": 8, "min": 2, "max": 20}]},
+      {"name": "effects.color_vertical_strips", "label": "Color V-Strips", "params": [{"name": "int_val", "label": "Count", "kind": "int", "default": 8, "min": 2, "max": 20}]},
+      {"name": "effects.dec_brightness", "label": "Decrease Brightness", "params": [{"name": "int_val", "label": "Amount", "kind": "int", "default": 30, "min": 1, "max": 255}]},
+      {"name": "effects.dither", "label": "Dither", "params": [{"name": "int_val", "label": "Depth", "kind": "int", "default": 2, "min": 1, "max": 10}]},
+      {"name": "effects.frosted_glass", "label": "Frosted Glass", "params": []},
+      {"name": "effects.halftone", "label": "Halftone", "params": []},
+      {"name": "effects.horizontal_strips", "label": "H-Strips", "params": [{"name": "int_val", "label": "Count", "kind": "int", "default": 8, "min": 2, "max": 20}]},
+      {"name": "effects.inc_brightness", "label": "Increase Brightness", "params": [{"name": "int_val", "label": "Amount", "kind": "int", "default": 30, "min": 1, "max": 255}]},
+      {"name": "effects.multiple_offsets", "label": "Multiple Offsets", "params": [{"name": "int_val", "label": "Offset", "kind": "int", "default": 30, "min": 1, "max": 100}]},
+      {"name": "effects.normalize", "label": "Normalize", "params": []},
+      {"name": "effects.offset", "label": "Offset", "params": [{"name": "int_val", "label": "Amount", "kind": "int", "default": 30, "min": 1, "max": 100}]},
+      {"name": "effects.offset_blue", "label": "Offset Blue", "params": [{"name": "int_val", "label": "Amount", "kind": "int", "default": 30, "min": 1, "max": 100}]},
+      {"name": "effects.offset_green", "label": "Offset Green", "params": [{"name": "int_val", "label": "Amount", "kind": "int", "default": 30, "min": 1, "max": 100}]},
+      {"name": "effects.offset_red", "label": "Offset Red", "params": [{"name": "int_val", "label": "Amount", "kind": "int", "default": 30, "min": 1, "max": 100}]},
+      {"name": "effects.oil", "label": "Oil Painting", "params": [{"name": "int_val", "label": "Radius", "kind": "int", "default": 4, "min": 1, "max": 10}, {"name": "float_val", "label": "Intensity", "kind": "float", "default": 55, "min": 1, "max": 255}]},
+      {"name": "effects.pixelize", "label": "Pixelize", "params": [{"name": "int_val", "label": "Block Size", "kind": "int", "default": 10, "min": 2, "max": 50}]},
+      {"name": "effects.primary", "label": "Primary", "params": []},
+      {"name": "effects.solarize", "label": "Solarize", "params": []},
+      {"name": "effects.solarize_retimg", "label": "Solarize (Return)", "params": []},
+      {"name": "effects.tint", "label": "Tint", "params": [{"name": "float_val", "label": "R Amount", "kind": "float", "default": 78, "min": 0, "max": 255}, {"name": "float_val2", "label": "G Amount", "kind": "float", "default": 12, "min": 0, "max": 255}]},
+      {"name": "effects.vertical_strips", "label": "V-Strips", "params": [{"name": "int_val", "label": "Count", "kind": "int", "default": 8, "min": 2, "max": 20}]}
+    ]
+  },
+  {
+    "category": "Convolution",
+    "transforms": [
+      {"name": "conv.box_blur", "label": "Box Blur", "params": []},
+      {"name": "conv.detect_45_deg_lines", "label": "Detect 45° Lines", "params": []},
+      {"name": "conv.detect_135_deg_lines", "label": "Detect 135° Lines", "params": []},
+      {"name": "conv.detect_horizontal_lines", "label": "Detect H-Lines", "params": []},
+      {"name": "conv.detect_vertical_lines", "label": "Detect V-Lines", "params": []},
+      {"name": "conv.edge_detection", "label": "Edge Detection", "params": []},
+      {"name": "conv.edge_one", "label": "Edge One", "params": []},
+      {"name": "conv.emboss", "label": "Emboss", "params": []},
+      {"name": "conv.gaussian_blur", "label": "Gaussian Blur", "params": [{"name": "int_val", "label": "Radius", "kind": "int", "default": 3, "min": 1, "max": 20}]},
+      {"name": "conv.identity", "label": "Identity", "params": []},
+      {"name": "conv.laplace", "label": "Laplace", "params": []},
+      {"name": "conv.noise_reduction", "label": "Noise Reduction", "params": []},
+      {"name": "conv.prewitt_horizontal", "label": "Prewitt Horizontal", "params": []},
+      {"name": "conv.sharpen", "label": "Sharpen", "params": []},
+      {"name": "conv.sobel_global", "label": "Sobel Global", "params": []},
+      {"name": "conv.sobel_horizontal", "label": "Sobel Horizontal", "params": []},
+      {"name": "conv.sobel_vertical", "label": "Sobel Vertical", "params": []}
+    ]
+  },
+  {
+    "category": "Filters",
+    "transforms": [
+      {"name": "filters.cali", "label": "Cali", "params": []},
+      {"name": "filters.dramatic", "label": "Dramatic", "params": []},
+      {"name": "filters.duotone_horizon", "label": "Duotone Horizon", "params": []},
+      {"name": "filters.duotone_lilac", "label": "Duotone Lilac", "params": []},
+      {"name": "filters.duotone_ochre", "label": "Duotone Ochre", "params": []},
+      {"name": "filters.duotone_violette", "label": "Duotone Violette", "params": []},
+      {"name": "filters.firenze", "label": "Firenze", "params": []},
+      {"name": "filters.golden", "label": "Golden", "params": []},
+      {"name": "filters.lix", "label": "Lix", "params": []},
+      {"name": "filters.lofi", "label": "Lo-Fi", "params": []},
+      {"name": "filters.neue", "label": "Neue", "params": []},
+      {"name": "filters.obsidian", "label": "Obsidian", "params": []},
+      {"name": "filters.pastel_pink", "label": "Pastel Pink", "params": []},
+      {"name": "filters.ryo", "label": "Ryo", "params": []},
+      {"name": "filters.filter", "label": "Named Filter", "params": [{"name": "filter_name", "label": "Filter", "kind": "select", "options": ["oceanic","islands","marine","seagreen","flagblue","liquid","diamante","radio","twenties","rosetint","mauve","bluechrome","vintage","perfume","serenity"]}]}
+    ]
+  },
+  {
+    "category": "Monochrome",
+    "transforms": [
+      {"name": "monochrome.b_grayscale", "label": "Blue Grayscale", "params": []},
+      {"name": "monochrome.decompose_max", "label": "Decompose Max", "params": []},
+      {"name": "monochrome.decompose_min", "label": "Decompose Min", "params": []},
+      {"name": "monochrome.desaturate", "label": "Desaturate", "params": []},
+      {"name": "monochrome.g_grayscale", "label": "Green Grayscale", "params": []},
+      {"name": "monochrome.grayscale", "label": "Grayscale", "params": []},
+      {"name": "monochrome.grayscale_human_corrected", "label": "Grayscale (Human)", "params": []},
+      {"name": "monochrome.grayscale_shades", "label": "Grayscale Shades", "params": [{"name": "int_val", "label": "Shades", "kind": "int", "default": 4, "min": 2, "max": 16}]},
+      {"name": "monochrome.monochrome", "label": "Monochrome", "params": [{"name": "float_val", "label": "R", "kind": "float", "default": 50, "min": 0, "max": 255}, {"name": "float_val2", "label": "G", "kind": "float", "default": 100, "min": 0, "max": 255}, {"name": "int_val", "label": "B", "kind": "int", "default": 150, "min": 0, "max": 255}]},
+      {"name": "monochrome.r_grayscale", "label": "Red Grayscale", "params": []},
+      {"name": "monochrome.sepia", "label": "Sepia", "params": []},
+      {"name": "monochrome.single_channel_grayscale", "label": "Single Channel Gray", "params": [{"name": "int_val", "label": "Channel (0=R,1=G,2=B)", "kind": "int", "default": 0, "min": 0, "max": 2}]},
+      {"name": "monochrome.threshold", "label": "Threshold", "params": [{"name": "int_val", "label": "Threshold", "kind": "int", "default": 128, "min": 0, "max": 255}]}
+    ]
+  },
+  {
+    "category": "Channels",
+    "transforms": [
+      {"name": "channels.alter_blue_channel", "label": "Alter Blue", "params": [{"name": "int_val", "label": "Amount", "kind": "int", "default": 50, "min": -255, "max": 255}]},
+      {"name": "channels.alter_channel", "label": "Alter Channel", "params": [{"name": "int_val", "label": "Channel (0=R,1=G,2=B)", "kind": "int", "default": 0, "min": 0, "max": 2}, {"name": "float_val", "label": "Amount", "kind": "float", "default": 50, "min": -255, "max": 255}]},
+      {"name": "channels.alter_channels", "label": "Alter All Channels", "params": [{"name": "int_val", "label": "R", "kind": "int", "default": 50, "min": -255, "max": 255}, {"name": "float_val", "label": "G", "kind": "float", "default": 0, "min": -255, "max": 255}, {"name": "float_val2", "label": "B", "kind": "float", "default": 0, "min": -255, "max": 255}]},
+      {"name": "channels.alter_green_channel", "label": "Alter Green", "params": [{"name": "int_val", "label": "Amount", "kind": "int", "default": 50, "min": -255, "max": 255}]},
+      {"name": "channels.alter_red_channel", "label": "Alter Red", "params": [{"name": "int_val", "label": "Amount", "kind": "int", "default": 50, "min": -255, "max": 255}]},
+      {"name": "channels.alter_two_channels", "label": "Alter Two Channels", "params": [{"name": "int_val", "label": "Channel 1 (0=R,1=G,2=B)", "kind": "int", "default": 0, "min": 0, "max": 2}, {"name": "float_val", "label": "Amount 1", "kind": "float", "default": 50, "min": -255, "max": 255}, {"name": "float_val2", "label": "Amount 2", "kind": "float", "default": 50, "min": -255, "max": 255}]},
+      {"name": "channels.invert", "label": "Invert", "params": []},
+      {"name": "channels.remove_blue_channel", "label": "Remove Blue", "params": []},
+      {"name": "channels.remove_channel", "label": "Remove Channel", "params": [{"name": "int_val", "label": "Channel (0=R,1=G,2=B)", "kind": "int", "default": 0, "min": 0, "max": 2}]},
+      {"name": "channels.remove_green_channel", "label": "Remove Green", "params": []},
+      {"name": "channels.remove_red_channel", "label": "Remove Red", "params": []},
+      {"name": "channels.swap_channels", "label": "Swap Channels", "params": [{"name": "int_val", "label": "Channel 1 (0=R,1=G,2=B)", "kind": "int", "default": 0, "min": 0, "max": 2}, {"name": "float_val", "label": "Channel 2 (0=R,1=G,2=B)", "kind": "float", "default": 2, "min": 0, "max": 2}]}
+    ]
+  },
+  {
+    "category": "Colour Spaces",
+    "transforms": [
+      {"name": "colour_spaces.darken_hsl", "label": "Darken (HSL)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.darken_hsluv", "label": "Darken (HSLuv)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.darken_hsv", "label": "Darken (HSV)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.darken_lch", "label": "Darken (LCh)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.desaturate_hsl", "label": "Desaturate (HSL)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.desaturate_hsluv", "label": "Desaturate (HSLuv)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.desaturate_hsv", "label": "Desaturate (HSV)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.desaturate_lch", "label": "Desaturate (LCh)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.gamma_correction", "label": "Gamma Correction", "params": [{"name": "float_val", "label": "R Gamma", "kind": "float", "default": 2.2, "min": 0.1, "max": 5, "step": 0.1}, {"name": "float_val2", "label": "G Gamma", "kind": "float", "default": 2.2, "min": 0.1, "max": 5, "step": 0.1}, {"name": "int_val", "label": "B Gamma (x10)", "kind": "int", "default": 22, "min": 1, "max": 50}]},
+      {"name": "colour_spaces.hue_rotate_hsl", "label": "Hue Rotate (HSL)", "params": [{"name": "float_val", "label": "Degrees", "kind": "float", "default": 30, "min": -360, "max": 360}]},
+      {"name": "colour_spaces.hue_rotate_hsluv", "label": "Hue Rotate (HSLuv)", "params": [{"name": "float_val", "label": "Degrees", "kind": "float", "default": 30, "min": -360, "max": 360}]},
+      {"name": "colour_spaces.hue_rotate_hsv", "label": "Hue Rotate (HSV)", "params": [{"name": "float_val", "label": "Degrees", "kind": "float", "default": 30, "min": -360, "max": 360}]},
+      {"name": "colour_spaces.hue_rotate_lch", "label": "Hue Rotate (LCh)", "params": [{"name": "float_val", "label": "Degrees", "kind": "float", "default": 30, "min": -360, "max": 360}]},
+      {"name": "colour_spaces.lighten_hsl", "label": "Lighten (HSL)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.lighten_hsluv", "label": "Lighten (HSLuv)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.lighten_hsv", "label": "Lighten (HSV)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.lighten_lch", "label": "Lighten (LCh)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.mix_with_colour", "label": "Mix With Colour", "params": [{"name": "int_val", "label": "R", "kind": "int", "default": 255, "min": 0, "max": 255}, {"name": "float_val", "label": "G", "kind": "float", "default": 0, "min": 0, "max": 255}, {"name": "float_val2", "label": "B", "kind": "float", "default": 128, "min": 0, "max": 255}]},
+      {"name": "colour_spaces.saturate_hsl", "label": "Saturate (HSL)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.saturate_hsluv", "label": "Saturate (HSLuv)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.saturate_hsv", "label": "Saturate (HSV)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]},
+      {"name": "colour_spaces.saturate_lch", "label": "Saturate (LCh)", "params": [{"name": "float_val", "label": "Amount", "kind": "float", "default": 0.2, "min": 0, "max": 1, "step": 0.05}]}
+    ]
+  },
+  {
+    "category": "Transform",
+    "transforms": [
+      {"name": "transform.fliph", "label": "Flip Horizontal", "params": []},
+      {"name": "transform.flipv", "label": "Flip Vertical", "params": []},
+      {"name": "transform.rotate", "label": "Rotate", "params": [{"name": "float_val", "label": "Angle (degrees)", "kind": "float", "default": 90, "min": -360, "max": 360}]},
+      {"name": "transform.resize", "label": "Resize", "params": [{"name": "width", "label": "Width", "kind": "int", "default": 400, "min": 10, "max": 4096}, {"name": "height", "label": "Height", "kind": "int", "default": 300, "min": 10, "max": 4096}]},
+      {"name": "transform.resample", "label": "Resample", "params": [{"name": "width", "label": "Width", "kind": "int", "default": 400, "min": 10, "max": 4096}, {"name": "height", "label": "Height", "kind": "int", "default": 300, "min": 10, "max": 4096}]},
+      {"name": "transform.crop", "label": "Crop", "params": [{"name": "int_val", "label": "X1", "kind": "int", "default": 0, "min": 0, "max": 4096}, {"name": "float_val", "label": "Y1", "kind": "float", "default": 0, "min": 0, "max": 4096}, {"name": "width", "label": "X2", "kind": "int", "default": 100, "min": 1, "max": 4096}, {"name": "height", "label": "Y2", "kind": "int", "default": 100, "min": 1, "max": 4096}]},
+      {"name": "transform.shearx", "label": "Shear X", "params": [{"name": "float_val", "label": "Angle", "kind": "float", "default": 15, "min": -45, "max": 45}]},
+      {"name": "transform.sheary", "label": "Shear Y", "params": [{"name": "float_val", "label": "Angle", "kind": "float", "default": 15, "min": -45, "max": 45}]},
+      {"name": "transform.seam_carve", "label": "Seam Carve", "params": [{"name": "width", "label": "Target Width", "kind": "int", "default": 400, "min": 10, "max": 4096}, {"name": "height", "label": "Target Height", "kind": "int", "default": 300, "min": 10, "max": 4096}]},
+      {"name": "transform.padding_uniform", "label": "Padding (Uniform)", "params": [{"name": "int_val", "label": "Padding", "kind": "int", "default": 20, "min": 1, "max": 100}]},
+      {"name": "transform.compress", "label": "Compress", "params": [{"name": "int_val", "label": "Quality", "kind": "int", "default": 75, "min": 1, "max": 100}]}
+    ]
+  },
+  {
+    "category": "Noise",
+    "transforms": [
+      {"name": "noise.add_noise_rand", "label": "Random Noise", "params": []},
+      {"name": "noise.pink_noise", "label": "Pink Noise", "params": []}
+    ]
+  }
+]
