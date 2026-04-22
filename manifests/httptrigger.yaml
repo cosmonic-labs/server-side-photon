@@ -1,0 +1,50 @@
+# Cosmonic Control deployment manifest for server-side-photon.
+#
+# Architecture: two Wasm components communicating over NATS.
+#   - http-api: HTTP ingress on port 80; publishes on subject "tasks.photon"
+#   - task-photon: subscribes to "tasks.photon", runs matrix-math operations, replies
+#
+# Prerequisites before `kubectl apply`:
+#   1. Publish component OCI images to a registry, e.g.:
+#        wkg oci push ghcr.io/cosmonic-labs/server-side-photon/http-api:0.1.0 \
+#          target/wasm32-wasip2/release/http_api.wasm
+#        wkg oci push ghcr.io/cosmonic-labs/server-side-photon/task-photon:0.1.0 \
+#          target/wasm32-wasip2/release/task_photon.wasm
+#   2. Update image tags below to match what you pushed.
+#   3. Ensure the target cluster has a wasmcloud:messaging/consumer provider
+#      configured (HostGroup or cluster-wide) pointing at your NATS server.
+#
+# Apply with: kubectl apply -f manifests/httptrigger.yaml
+apiVersion: control.cosmonic.io/v1alpha1
+kind: HTTPTrigger
+metadata:
+  name: server-side-photon
+  namespace: default
+spec:
+  replicas: 1
+  ingress:
+    host: "server-side-photon.localhost.cosmonic.sh"
+    paths:
+      - path: /
+        pathType: Prefix
+  template:
+    spec:
+      hostSelector:
+        hostgroup: default
+      components:
+        - name: http-api
+          image: ghcr.io/cosmonic-labs/server-side-photon/http-api:0.1.0
+        - name: task-photon
+          image: ghcr.io/cosmonic-labs/server-side-photon/task-photon:0.1.0
+      hostInterfaces:
+        - namespace: wasmcloud
+          package: messaging
+          version: 0.2.0
+          interfaces:
+            - consumer
+            - handler
+        - namespace: wasi
+          package: logging
+          version: 0.1.0-draft
+          interfaces:
+            - logging
