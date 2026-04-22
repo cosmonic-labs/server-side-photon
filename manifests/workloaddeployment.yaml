@@ -1,0 +1,60 @@
+# wasmCloud v2 deployment manifests for server-side-photon.
+#
+# Two WorkloadDeployments that communicate over NATS (provided by the
+# wasmcloud:messaging host plugin that ships with wasmCloud v2 hosts):
+#   - server-side-photon-http:  http-api component.
+#         Imports wasi:http/incoming-handler (for inbound HTTP) and
+#         wasmcloud:messaging/consumer (for outbound request/reply to the task).
+#   - server-side-photon-task:  task-photon component.
+#         Exports wasmcloud:messaging/handler; subscribes to "tasks.photon".
+#
+# Ingress: the wasmCloud runtime-gateway (installed with the runtime-operator
+# chart) listens on port 80 and routes by Host header to the component
+# declaring a matching wasi:http config.host value — so requests reach
+# http-api as: curl -H 'Host: server-side-photon.localhost.direct' http://localhost/
+#
+# Apply with: kubectl apply -f manifests/workloaddeployment.yaml
+---
+apiVersion: runtime.wasmcloud.dev/v1alpha1
+kind: WorkloadDeployment
+metadata:
+  name: server-side-photon-http
+spec:
+  replicas: 1
+  template:
+    spec:
+      hostInterfaces:
+        - namespace: wasi
+          package: http
+          interfaces:
+            - incoming-handler
+          config:
+            host: server-side-photon.localhost.direct
+        - namespace: wasmcloud
+          package: messaging
+          version: "0.2.0"
+          interfaces:
+            - consumer
+      components:
+        - name: http-api
+          image: ghcr.io/cosmonic-labs/server-side-photon/http-api:0.1.0
+---
+apiVersion: runtime.wasmcloud.dev/v1alpha1
+kind: WorkloadDeployment
+metadata:
+  name: server-side-photon-task
+spec:
+  replicas: 1
+  template:
+    spec:
+      hostInterfaces:
+        - namespace: wasmcloud
+          package: messaging
+          version: "0.2.0"
+          interfaces:
+            - handler
+          config:
+            subscriptions: "tasks.photon"
+      components:
+        - name: task-photon
+          image: ghcr.io/cosmonic-labs/server-side-photon/task-photon:0.1.0
