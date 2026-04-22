@@ -1,6 +1,6 @@
 # Photon wasmCloud Demo
 
-A reference application demonstrating server-side image processing with WebAssembly using [wasmCloud](https://wasmcloud.com) and [photon-rs](https://github.com/silvia-odwyer/photon).
+A reference application demonstrating server-side image processing with WebAssembly using [wasmCloud](https://wasmcloud.com) and [photon-rs](https://github.com/silvia-odwyer/photon). With `photon-rs`, you are essentially doing pure linear algebra and matrix math disguised as image processing.
 
 All ~130 image transforms from photon-rs run server-side as Wasm components, proving that matrix math and image processing work well in the WebAssembly component model.
 
@@ -20,6 +20,9 @@ All ~130 image transforms from photon-rs run server-side as Wasm components, pro
 - **task-photon** (`task-photon/`): Worker component that receives images + transform names over NATS, applies photon-rs transforms, and returns processed images.
 
 Both components compile to `wasm32-wasip2` and communicate via wasmCloud's `wasmcloud:messaging` interface (backed by NATS). The WIT interface definitions live in `wit/world.wit`.
+
+### Demonstration
+![Photon wasmCloud Demo — server-side image processing with ~130 transforms running as Wasm components](geoint-photon-rs-wasm-matrix_math-image-processing_1920x1080.gif) 
 
 ### Project Structure
 
