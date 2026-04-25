@@ -4,6 +4,11 @@ A reference application demonstrating server-side image processing with WebAssem
 
 All ~130 image transforms from photon-rs run server-side as Wasm components, demonstrating matrix math and image processing in the WebAssembly component model.
 
+## NOTE: Constraints
+
+This repo is a light weight proof of concept that uses a local image to demonstrate basic matrix math, is architectural simplified, and has not been secured for production. Please see [CONSTRAINTS.md](CONSTRAINTS.md) for a list of opportunities to make this project more architecturally sound, secure, and correct.
+
+
 ## Architecture
 
 ```
