@@ -77,7 +77,13 @@ jobs:
             tag=$(echo "$tag" | xargs)
             ref="${IMAGE}:${tag}"
             echo "Pushing $ref"
-            push_json=$(wash oci push --output json "$ref" "$PATH_WASM")
+            err=$(mktemp)
+            if ! push_json=$(wash oci push --output json "$ref" "$PATH_WASM" 2>"$err"); then
+              echo "::error::wash oci push failed for $ref"
+              echo "stdout:"; echo "$push_json"
+              echo "stderr:"; cat "$err"
+              exit 1
+            fi
             this_digest=$(echo "$push_json" | jq -r .data.digest)
             if [ -z "$this_digest" ] || [ "$this_digest" = "null" ]; then
               echo "::error::no digest in push output: $push_json"
@@ -102,7 +108,13 @@ jobs:
             tag=$(echo "$tag" | xargs)
             ref="${IMAGE}:${tag}"
             echo "Pushing $ref"
-            push_json=$(wash oci push --output json "$ref" "$PATH_WASM")
+            err=$(mktemp)
+            if ! push_json=$(wash oci push --output json "$ref" "$PATH_WASM" 2>"$err"); then
+              echo "::error::wash oci push failed for $ref"
+              echo "stdout:"; echo "$push_json"
+              echo "stderr:"; cat "$err"
+              exit 1
+            fi
             this_digest=$(echo "$push_json" | jq -r .data.digest)
             if [ -z "$this_digest" ] || [ "$this_digest" = "null" ]; then
               echo "::error::no digest in push output: $push_json"
