@@ -13,7 +13,7 @@
 # declaring a matching wasi:http config.host value — so requests reach
 # http-api as: curl -H 'Host: server-side-photon.localhost.direct' http://localhost/
 #
-# Apply with: kubectl apply -f manifests/workloaddeployment.yaml
+# Apply with: kubectl apply -f deploy/wasmcloud/workloaddeployment.yaml
 ---
 apiVersion: runtime.wasmcloud.dev/v1alpha1
 kind: WorkloadDeployment
@@ -35,6 +35,7 @@ spec:
           version: "0.2.0"
           interfaces:
             - consumer
+            - types
       components:
         - name: http-api
           image: ghcr.io/cosmonic-labs/server-side-photon/http-api:0.1.0
@@ -53,8 +54,11 @@ spec:
           version: "0.2.0"
           interfaces:
             - handler
+            - consumer
+            - types
           config:
             subscriptions: "tasks.photon"
       components:
         - name: task-photon
           image: ghcr.io/cosmonic-labs/server-side-photon/task-photon:0.1.0
+          poolSize: 1

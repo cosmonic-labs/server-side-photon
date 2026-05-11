@@ -1,0 +1,31 @@
+# Cosmonic Control WorkloadDeployment for the server-side-photon task-photon
+# component. Subscribes to NATS subject "tasks.photon"; receives requests
+# published by the http-api HTTPTrigger.
+apiVersion: runtime.wasmcloud.dev/v1alpha1
+kind: WorkloadDeployment
+metadata:
+  name: ssp-taskphoton
+  namespace: cosmonic-system
+spec:
+  replicas: 1
+  template:
+    spec:
+      hostInterfaces:
+        - namespace: wasi
+          package: logging
+          version: 0.1.0-draft
+          interfaces:
+            - logging
+        - namespace: wasmcloud
+          package: messaging
+          version: "0.2.0"
+          interfaces:
+            - handler
+            - consumer
+            - types
+          config:
+            subscriptions: tasks.photon
+      components:
+        - name: task-photon
+          image: ghcr.io/cosmonic-labs/server-side-photon/task-photon:0.1.0
+          poolSize: 1
